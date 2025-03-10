@@ -1,5 +1,71 @@
-# Created by https://www.toptal.com/developers/gitignore/api/java,maven,vim,visualstudio,visualstudiocode
-# Edit at https://www.toptal.com/developers/gitignore?templates=java,maven,vim,visualstudio,visualstudiocode
+# Created by https://www.toptal.com/developers/gitignore/api/java,maven,vim,visualstudio,visualstudiocode,eclipse
+# Edit at https://www.toptal.com/developers/gitignore?templates=java,maven,vim,visualstudio,visualstudiocode,eclipse
+
+### Eclipse ###
+.metadata
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+.recommenders
+
+# External tool builders
+.externalToolBuilders/
+
+# Locally stored "Eclipse launch configurations"
+*.launch
+
+# PyDev specific (Python IDE for Eclipse)
+*.pydevproject
+
+# CDT-specific (C/C++ Development Tooling)
+.cproject
+
+# CDT- autotools
+.autotools
+
+# Java annotation processor (APT)
+.factorypath
+
+# PDT-specific (PHP Development Tools)
+.buildpath
+
+# sbteclipse plugin
+.target
+
+# Tern plugin
+.tern-project
+
+# TeXlipse plugin
+.texlipse
+
+# STS (Spring Tool Suite)
+.springBeans
+
+# Code Recommenders
+.recommenders/
+
+# Annotation Processing
+.apt_generated/
+.apt_generated_test/
+
+# Scala IDE specific (Scala & Java development for Eclipse)
+.cache-main
+.scala_dependencies
+.worksheet
+
+# Uncomment this line if you wish to ignore the project description file.
+# Typically, this file would be tracked if it contains build/dependency configurations:
+#.project
+
+### Eclipse Patch ###
+# Spring Boot Tooling
+.sts4-cache/
 
 ### Java ###
 # Compiled class file
@@ -175,7 +241,6 @@ StyleCopReport.xml
 *.tlb
 *.tli
 *.tlh
-*.tmp
 *.tmp_proj
 *_wpftmp.csproj
 *.tlog
@@ -479,6 +544,9 @@ FodyWeavers.xsd
 ### VisualStudio Patch ###
 # Additional files built by Visual Studio
 
-# End of https://www.toptal.com/developers/gitignore/api/java,maven,vim,visualstudio,visualstudiocode
+# End of https://www.toptal.com/developers/gitignore/api/java,maven,vim,visualstudio,visualstudiocode,eclipse
 
 .direnv
+*.properties
+
+!/googol.example.properties

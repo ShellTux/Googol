@@ -34,6 +34,9 @@
             ncurses
             patchelf
             zlib
+          ] ++ [
+            pkgs.entr
+            pkgs.tmux
           ];
 
           shellHook =
