@@ -547,6 +547,7 @@ FodyWeavers.xsd
 # End of https://www.toptal.com/developers/gitignore/api/java,maven,vim,visualstudio,visualstudiocode,eclipse
 
 .direnv
+/files.txt
 *.properties
 
 !/googol.example.properties
