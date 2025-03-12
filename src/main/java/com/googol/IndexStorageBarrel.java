@@ -1,10 +1,5 @@
 package com.googol;
 
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.MulticastSocket;
-import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.rmi.RemoteException;
@@ -21,35 +16,27 @@ public class IndexStorageBarrel extends UnicastRemoteObject implements IndexStor
     super();
   }
 
-  public static void main(String[] args) throws RemoteException, UnknownHostException, SocketException {
+  public static void main(String[] args) throws RemoteException, UnknownHostException, SocketException, KeyNotFoundException {
+    System.out.println("--- Welcome to \033[32mIndex Storage Barrels\033[0m ---");
+
     semaphore = new Semaphore(1);
 
+    final GoogolProperties properties = GoogolProperties.getDefaultSettings();
 
-    final String multicastIP = GoogolProperties.properties.getBarrelsMulticastIP();
-    final int multicastPort = GoogolProperties.properties.getBarrelsMulticastPort();
-    final int barrelsRegistryPort = GoogolProperties.properties.getBarrelsRegistryPort();
-    final int nBarrels = GoogolProperties.properties.getNumberBarrels();
+    System.out.println("properties: " + properties);
 
-    System.out.println("multicast ip: " + multicastIP);
-    System.out.println("multicast port: " + multicastPort);
+    final int barrelsRegistryPort = properties.getInt("Barrels.Registry.port");
+    final int barrelsNumber = properties.getInt("Barrels.number");
+
     System.out.println("barrels port: " + barrelsRegistryPort);
-    System.out.println("number of barrels: " + nBarrels);
-
-    try {
-      MulticastSocket skt = new MulticastSocket(multicastPort);
-      InetAddress mCastAddr = InetAddress.getByName(multicastIP);
-      skt.joinGroup(new InetSocketAddress(mCastAddr, multicastPort), NetworkInterface.getByIndex(0));
-    } catch (IOException e) {
-      // TODO: Auto-generated
-      e.printStackTrace();
-    }
+    System.out.println("number of barrels: " + barrelsNumber);
 
     System.getProperties().put("java.security.policy", "policy.all");
 
     Registry registry = LocateRegistry.createRegistry(barrelsRegistryPort);
 
     ArrayList<IndexStorageBarrelI> barrels = new ArrayList<>();
-    for (int i = 0; i < nBarrels; ++i) {
+    for (int i = 0; i < barrelsNumber; ++i) {
       IndexStorageBarrel barrel = new IndexStorageBarrel();
       final String barrelName = "barrel" + i;
 
