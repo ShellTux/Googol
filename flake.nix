@@ -36,7 +36,11 @@
             zlib
           ] ++ [
             pkgs.entr
+            pkgs.figlet
+            pkgs.simple-http-server
             pkgs.tmux
+            pkgs.unzip
+            pkgs.zip
           ];
 
           shellHook =
