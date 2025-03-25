@@ -17,6 +17,19 @@ list_classes() {
   echo Url
 }
 
+mvn_args=
+
+for arg
+do
+  case "$arg" in
+    -h | --help) usage ;;
+    --debug)
+      mvn_args="$mvn_args --debug"
+      shift
+      ;;
+  esac
+done
+
 class="$1"
 
 list_classes | grep --quiet "^$class$" || usage
@@ -34,7 +47,8 @@ case "$class" in
     (
     tput smcup
     clear
-    mvn exec:java --quiet --offline --define=exec.mainClass=com.googol."$class"
+    # shellcheck disable=SC2086
+    mvn exec:java $mvn_args --quiet --offline --define=exec.mainClass=com.googol."$class"
     tput rmcup
     )
     ;;
