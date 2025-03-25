@@ -1,4 +1,4 @@
-ARCHIVE       = ./Googol-LuísGóis.zip
+ARCHIVE       = Googol-SD.zip
 JAVADOC_DIR   = ./target/reports/apidocs/
 JAVADOC_FILES = $(shell find $(JAVADOC_DIR) -type f)
 JAVA_SRCS     = $(shell find src -type f -name "*.java")
