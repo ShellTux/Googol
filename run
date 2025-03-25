@@ -13,6 +13,7 @@ list_classes() {
   echo Downloader
   echo Gateway
   echo Client
+  echo JsoupDemo
 }
 
 class="$1"
@@ -28,7 +29,7 @@ case "$class" in
     tput rmcup
     )
     ;;
-  Downloader | Client)
+  Downloader | Client | JsoupDemo)
     (
     tput smcup
     clear
