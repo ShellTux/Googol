@@ -21,7 +21,8 @@ import java.util.logging.Logger;
 
 public class IndexStorageBarrel extends UnicastRemoteObject implements IndexStorageBarrelI {
   private BlockingQueue<String> urlQueue;
-  private HashMap<String, HashSet<String>> indexStore;
+  private HashMap<String, HashSet<Url>> indexStore;
+  private HashSet<Url> indexedUrls;
 
   private static Semaphore semaphore = null;
 
@@ -47,6 +48,7 @@ public class IndexStorageBarrel extends UnicastRemoteObject implements IndexStor
 
     urlQueue = new LinkedBlockingQueue<>();
     indexStore = new HashMap<>();
+    indexedUrls = new HashSet<>();
   }
 
   public static void main(String[] args) throws RemoteException, UnknownHostException, SocketException, KeyNotFoundException {
@@ -79,6 +81,15 @@ public class IndexStorageBarrel extends UnicastRemoteObject implements IndexStor
 
   @Override
   public boolean queueUrl(final String url) throws RemoteException {
+    // TODO: add url to queue if it was index a long time ago
+    if (indexedUrls.contains(new Url(url))) {
+      return false;
+    }
+
+    if (urlQueue.contains(url)) {
+      return false;
+    }
+
     return urlQueue.add(url);
   }
 
@@ -105,21 +116,24 @@ public class IndexStorageBarrel extends UnicastRemoteObject implements IndexStor
 
   @Override
   public void indexUrl(final String url, final ArrayList<String> words) throws RemoteException {
-    if (!indexStore.containsKey(url)) {
-      indexStore.put(url, new HashSet<>());
-    }
+    final Url indexedUrl = new Url(url);
+    int addedWords = 0;
 
-    HashSet<String> urlWords = indexStore.get(url);
-    int added = 0;
     for (final String word: words) {
-      if (urlWords.contains(word)) {
-        continue;
+      if (!indexStore.containsKey(word)) {
+        indexStore.put(word, new HashSet<>());
       }
 
-      urlWords.add(word);
-      added += 1;
+      HashSet<Url> urls = indexStore.get(word);
+      if (urls.add(indexedUrl)) {
+        addedWords += 1;
+      }
+
+      indexStore.replace(word, urls);
     }
 
-    logger.info(String.format("url %s: %d words added", url, added));
+    indexedUrls.add(indexedUrl);
+
+    logger.info(String.format("url %s: %d words added", url, addedWords));
   }
 }
