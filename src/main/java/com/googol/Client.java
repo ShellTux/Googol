@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Client extends UnicastRemoteObject {
+  private static GatewayI gateway;
+  private static int gatewayRegistryPort;
   private static enum Choice {
     Exit,
     AddUrlToIndex,
@@ -21,13 +23,21 @@ public class Client extends UnicastRemoteObject {
     super();
   }
 
+  private static void connectToGateway() {
+    try {
+      gateway = (GatewayI) LocateRegistry
+        .getRegistry(gatewayRegistryPort)
+        .lookup("gateway");
+    } catch (RemoteException | NotBoundException e) {
+      // TODO Auto-generated catch block
+      gateway = null;
+    }
+  }
+
   public static void main(String[] args) throws RemoteException, NotBoundException, KeyNotFoundException {
     final GoogolProperties properties = GoogolProperties.getDefaultSettings();
 
-    final int gatewayRegistryPort = properties.getInt("Gateway.Registry.port");
-    GatewayI gateway = (GatewayI) LocateRegistry
-      .getRegistry(gatewayRegistryPort)
-      .lookup("gateway");
+    gatewayRegistryPort = properties.getInt("Gateway.Registry.port");
 
     final String motd = """
                                _        _ _            _
@@ -67,6 +77,17 @@ public class Client extends UnicastRemoteObject {
         default -> Choice.Status;
       };
 
+      if (gateway == null) {
+        connectToGateway();
+      }
+
+      if (gateway == null) {
+        System.out.print("\033[H\033[2J");
+        System.out.println("Failed connecting to gateway...");
+        System.out.println("-------------------------------\n");
+        continue;
+      }
+
       System.out.print("\033[H\033[2J");
 
       try {
@@ -104,7 +125,8 @@ public class Client extends UnicastRemoteObject {
           } break;
         }
       } catch (RemoteException e) {
-
+        System.out.println("Failed connecting to gateway...");
+        gateway = null;
       }
 
       System.out.println("-------------------------------\n");
