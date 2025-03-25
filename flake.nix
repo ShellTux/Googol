@@ -37,7 +37,10 @@
           ] ++ [
             pkgs.entr
             pkgs.figlet
+            pkgs.pandoc
+            pkgs.pandoc-include
             pkgs.simple-http-server
+            pkgs.texliveFull
             pkgs.tmux
             pkgs.unzip
             pkgs.zip

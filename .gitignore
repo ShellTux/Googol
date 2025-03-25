@@ -549,5 +549,6 @@ FodyWeavers.xsd
 .direnv
 /files.txt
 *.properties
+*.pdf
 
 !/googol.example.properties
