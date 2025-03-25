@@ -19,9 +19,9 @@ javadoc:
 archive: $(ARCHIVE)
 
 $(ARCHIVE): $(REPORT) | javadoc
-	rm --force $<
+	rm --force $@
 	git ls-files > files.txt
-	echo $< >> files.txt
+	ls -1 $< >> files.txt
 	find $(JAVADOC_DIR) -type f >> files.txt
 	zip -@ $@ < files.txt
 
