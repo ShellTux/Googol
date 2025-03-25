@@ -79,7 +79,7 @@ public class Gateway extends UnicastRemoteObject implements GatewayI {
 
   @Override
   public String getStatus() throws RemoteException {
-    logger.info(String.format("Status requested!\n"));
+    logger.info(String.format("Status requested!"));
 
     String status ="\033[5;33mGateway Status\033[0m:\n";
 
