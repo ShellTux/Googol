@@ -1,24 +1,40 @@
 package com.googol;
 
+import java.io.File;
+import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Optional;
 import java.util.Queue;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Gateway extends UnicastRemoteObject implements GatewayI {
-  private Queue<String> urlQueue;
-
   private static ArrayList<IndexStorageBarrelI> barrels = new ArrayList<>();
+
+  private static Logger logger = Logger.getLogger("com.googol.Gateway");
+
+  static {
+    FileHandler fh;
+    try {
+      new File("logs/").mkdir();
+      fh = new FileHandler("logs/gateway%g.log.xml");
+
+      logger.addHandler(fh);
+      logger.setLevel(Level.ALL);
+      logger.info("\033[32mGateway\033[0m Starting...");
+    } catch (SecurityException | IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+  };
 
   protected Gateway() throws RemoteException {
     super();
-
-    urlQueue = new LinkedList<>();
   }
 
   public static void main(String[] args) throws RemoteException, KeyNotFoundException {
@@ -63,7 +79,11 @@ public class Gateway extends UnicastRemoteObject implements GatewayI {
 
   @Override
   public String getStatus() throws RemoteException {
+    logger.info(String.format("Status requested!\n"));
+
     String status ="\033[5;33mGateway Status\033[0m:\n";
+
+    final Queue<String> urlQueue = getBarrel().getQueue();
 
     status += "Queue: ";
 
@@ -82,24 +102,17 @@ public class Gateway extends UnicastRemoteObject implements GatewayI {
   }
 
   @Override
-  public boolean queueUrl(final String url) throws RemoteException {
-    urlQueue.add(url);
-
-    return true;
-  }
-
-  @Override
   public ArrayList<String> getTop10Searches() throws RemoteException {
     // TODO Auto-generated method stub
     throw new UnsupportedOperationException("Unimplemented method 'getTop10Searches'");
   }
 
-@Override
-public Optional<String> unqueueUrl() throws RemoteException {
-    if (urlQueue.isEmpty()) {
-      return Optional.empty();
-    }
+  private IndexStorageBarrelI getBarrel() throws RemoteException {
+    return barrels.get(0);
+  }
 
-    return Optional.of(urlQueue.remove());
+  @Override
+  public boolean queueUrl(String url) throws RemoteException {
+    return getBarrel().queueUrl(url);
   }
 }
