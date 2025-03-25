@@ -19,6 +19,10 @@ import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * IndexStorageBarrel acts as a storage system for URLs and their indexed words.
+ * It handles queuing and indexing requests from downloaders.
+ */
 public class IndexStorageBarrel extends UnicastRemoteObject implements IndexStorageBarrelI {
   private BlockingQueue<String> urlQueue;
   private HashMap<String, HashSet<Url>> indexStore;
@@ -51,6 +55,15 @@ public class IndexStorageBarrel extends UnicastRemoteObject implements IndexStor
     indexedUrls = new HashSet<>();
   }
 
+  /**
+   * Main method to initialize and start the index storage barrels.
+   *
+   * @param args Command-line arguments.
+   * @throws RemoteException if a communication-related exception occurs.
+   * @throws UnknownHostException if the local host name cannot be resolved.
+   * @throws SocketException if an error occurs while creating a socket.
+   * @throws KeyNotFoundException if a required key in the properties is not found.
+   */
   public static void main(String[] args) throws RemoteException, UnknownHostException, SocketException, KeyNotFoundException {
     System.out.println("--- Welcome to \033[32mIndex Storage Barrels\033[0m ---");
 
@@ -79,6 +92,13 @@ public class IndexStorageBarrel extends UnicastRemoteObject implements IndexStor
     }
   }
 
+  /**
+   * Queues a URL for indexing.
+   *
+   * @param url The URL to be queued.
+   * @return true if the URL was successfully queued, false otherwise.
+   * @throws RemoteException if a communication-related exception occurs.
+   */
   @Override
   public boolean queueUrl(final String url) throws RemoteException {
     // TODO: add url to queue if it was index a long time ago
@@ -93,6 +113,12 @@ public class IndexStorageBarrel extends UnicastRemoteObject implements IndexStor
     return urlQueue.add(url);
   }
 
+  /**
+   * Unqueues and returns a URL for processing.
+   *
+   * @return The next URL to be processed.
+   * @throws RemoteException if a communication-related exception occurs.
+   */
   @Override
   public String unqueueUrl() throws RemoteException {
     try {
@@ -103,17 +129,36 @@ public class IndexStorageBarrel extends UnicastRemoteObject implements IndexStor
     }
   }
 
+  /**
+   * Gets the status of the IndexStorageBarrel (currently unimplemented).
+   *
+   * @return A status string.
+   * @throws RemoteException if a communication-related exception occurs.
+   */
   @Override
   public String getStatus() throws RemoteException {
     // TODO Auto-generated method stub
     throw new UnsupportedOperationException("Unimplemented method 'getStatus'");
   }
 
+  /**
+   * Retrieves the current queue of URLs.
+   *
+   * @return The current queue of URLs.
+   * @throws RemoteException if a communication-related exception occurs.
+   */
   @Override
   public Queue<String> getQueue() throws RemoteException {
     return urlQueue;
   }
 
+  /**
+   * Indexes a URL with its associated words into the storage.
+   *
+   * @param url The URL to index.
+   * @param words The list of words associated with the URL.
+   * @throws RemoteException if a communication-related exception occurs.
+   */
   @Override
   public void indexUrl(final String url, final ArrayList<String> words) throws RemoteException {
     final Url indexedUrl = new Url(url);

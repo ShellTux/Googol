@@ -12,7 +12,18 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
+/**
+ * Demonstrates the use of Jsoup for web scraping.
+ * It connects to a specified URL and extracts words and links from the page.
+ */
 public class JsoupDemo {
+
+  /**
+   * Main method to execute the Jsoup demonstration.
+   *
+   * @param args Command-line arguments.
+   * @throws IOException if an I/O error occurs during connection to the URL.
+   */
   public static void main(String[] args) throws IOException {
     final String url = "http://127.0.0.1:9090/index.html";
     Scanner scanner = new Scanner(System.in);
@@ -27,7 +38,7 @@ public class JsoupDemo {
       words = Collections
         .list(wordsTokenizer)
         .stream()
-        .map(word -> (String)word)
+        .map(word -> (String) word)
         .collect(Collectors.toList());
 
       System.out.println(String.format("words = %s", words));

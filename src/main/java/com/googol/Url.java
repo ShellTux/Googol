@@ -5,6 +5,11 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Scanner;
 
+/**
+ * Represents a URL to be crawled by the web crawler.
+ * The URL maintains information about its last indexing time and
+ * a reindex interval to determine when it can be re-indexed.
+ */
 public class Url {
   private String url;
   private LocalDateTime lastIndexedTime;
@@ -14,26 +19,52 @@ public class Url {
 
   private static boolean isDebugEnabled = false;
 
+  /**
+   * Constructs a Url object with the specified URL.
+   *
+   * @param url The URL string to be indexed.
+   */
   public Url(final String url) {
     this.url = url;
     lastIndexedTime = null;
     reindexIntervalSeconds = defaultReindexIntervalSeconds;
   }
 
+  /**
+   * Constructs a Url object with the specified URL and reindex interval.
+   *
+   * @param url The URL string to be indexed.
+   * @param reindexInterval The reindex interval in seconds.
+   */
   public Url(final String url, final long reindexInterval) {
     this(url);
 
     this.reindexIntervalSeconds = reindexInterval;
   }
 
+  /**
+   * Returns the URL string.
+   *
+   * @return The URL string.
+   */
   public String getUrl() {
     return url;
   }
 
+  /**
+   * Returns the last indexed time of the URL.
+   *
+   * @return The last indexed time as a LocalDateTime object.
+   */
   public LocalDateTime getLastIndexedTime() {
     return lastIndexedTime;
   }
 
+  /**
+   * Determines if the URL can be re-indexed.
+   *
+   * @return true if the URL can be re-indexed, false otherwise.
+   */
   public boolean canReindex() {
     if (lastIndexedTime == null) {
       return true;
@@ -43,6 +74,9 @@ public class Url {
     return LocalDateTime.now().isAfter(nextIndexingTime);
   }
 
+  /**
+   * Sets the index for the URL, updating the last indexed time if applicable.
+   */
   public void setIndex() {
     if (!canReindex()) {
       if (isDebugEnabled) {
@@ -76,6 +110,12 @@ public class Url {
     return Objects.hash(url);
   }
 
+  /**
+   * Main method for testing the functionality of the Url class.
+   *
+   * @param args Command-line arguments.
+   * @throws InterruptedException if the thread sleep is interrupted.
+   */
   public static void main(String[] args) throws InterruptedException {
     final int interval = 1;
 

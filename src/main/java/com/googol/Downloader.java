@@ -22,6 +22,11 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
+/**
+ * The Downloader class is responsible for downloading and indexing
+ * webpages using the Jsoup library. It is designed to run in a separate
+ * thread and consumes URLs from a queue.
+ */
 public class Downloader implements Runnable {
     private ArrayList<IndexStorageBarrelI> barrels;
     private boolean running;
@@ -49,6 +54,11 @@ public class Downloader implements Runnable {
         }
     };
 
+    /**
+     * Loads stop words from a specified file path.
+     *
+     * @throws KeyNotFoundException if the stop words file path is not found in the properties.
+     */
     public static void loadStopWords() throws KeyNotFoundException {
         final GoogolProperties properties = GoogolProperties.getDefaultSettings();
         final String stopWordsFilepath = properties.getString("Downloaders.StopWords.filepath");
@@ -68,6 +78,13 @@ public class Downloader implements Runnable {
         }
     }
 
+    /**
+     * Main method to initialize and start downloaders.
+     *
+     * @param args Command-line arguments.
+     * @throws RemoteException if a communication-related exception occurs.
+     * @throws KeyNotFoundException if a required key in the properties is not found.
+     */
     public static void main(String[] args) throws RemoteException, KeyNotFoundException {
         final GoogolProperties properties = GoogolProperties.getDefaultSettings();
 
@@ -105,10 +122,12 @@ public class Downloader implements Runnable {
     }
 
     /**
-     * @param id
-     * @param barrels
-     * @deprecated TODO: Remove this constructor for the reliable multicast
-     * @throws RemoteException
+     * Constructs a Downloader instance with a specified ID and list of barrels.
+     *
+     * @param id The unique identifier for the downloader.
+     * @param barrels The list of indexing barrels to use for URL indexing.
+     * @throws RemoteException if a communication-related exception occurs.
+     * @deprecated TODO: Remove this constructor for reliable multicast implementation.
      */
     public Downloader(final int id, final ArrayList<IndexStorageBarrelI> barrels) throws RemoteException {
         super();
@@ -119,6 +138,9 @@ public class Downloader implements Runnable {
         this.name = String.format("downloader%d", id);
     }
 
+    /**
+     * Starts the downloader thread.
+     */
     void start() {
         if (running) {
             return;
@@ -129,6 +151,9 @@ public class Downloader implements Runnable {
         thread.start();
     }
 
+    /**
+     * Stops the downloader thread and waits for its completion.
+     */
     void stop() {
         running = false;
         if (thread != null) {
@@ -197,5 +222,4 @@ public class Downloader implements Runnable {
 
         return new ArrayList<String>(urlWords);
     }
-
 }

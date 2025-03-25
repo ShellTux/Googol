@@ -7,9 +7,17 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+/**
+ * Represents the client that interacts with the gateway for
+ * URL indexing and searching functionality.
+ */
 public class Client extends UnicastRemoteObject {
   private static GatewayI gateway;
   private static int gatewayRegistryPort;
+
+  /**
+   * Enum representing the various choices available to the user.
+   */
   private static enum Choice {
     Exit,
     AddUrlToIndex,
@@ -17,12 +25,15 @@ public class Client extends UnicastRemoteObject {
     ConsultPagesByUrl,
     Top10,
     Status,
-  };
+  }
 
   protected Client() throws RemoteException {
     super();
   }
 
+  /**
+   * Connects to the gateway service.
+   */
   private static void connectToGateway() {
     try {
       gateway = (GatewayI) LocateRegistry
@@ -34,6 +45,13 @@ public class Client extends UnicastRemoteObject {
     }
   }
 
+  /**
+   * Main method to execute the client application.
+   *
+   * @param args Command-line arguments.
+   * @throws RemoteException if a communication-related exception occurs.
+   * @throws NotBoundException if the RMI registry does not contain a binding for the gateway.
+   */
   public static void main(String[] args) throws RemoteException, NotBoundException, KeyNotFoundException {
     final GoogolProperties properties = GoogolProperties.getDefaultSettings();
 
