@@ -43,16 +43,20 @@ public class Downloader implements Runnable {
             logger.addHandler(fh);
             logger.setLevel(Level.ALL);
             logger.info("\033[32mDownloader\033[0m Starting...");
-        } catch (SecurityException | IOException e) {
+        } catch (SecurityException | IOException | KeyNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
     };
 
-    public static void loadStopWords() {
+    public static void loadStopWords() throws KeyNotFoundException {
+        final GoogolProperties properties = GoogolProperties.getDefaultSettings();
+        final String stopWordsFilepath = properties.getString("Downloaders.StopWords.filepath");
+
         stopWords = new HashSet<>();
+
         // TODO: move hardcoded string to config
-        try (BufferedReader reader = new BufferedReader(new FileReader("stopwords.txt"))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(stopWordsFilepath))) {
             for (String line = reader.readLine(); line != null; line = reader.readLine()) {
                 final String word = line.strip();
                 System.out.println("Loaded stop word: " + word);
