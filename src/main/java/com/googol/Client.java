@@ -5,7 +5,11 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Scanner;
+
+import javax.swing.JOptionPane;
 
 /**
  * Represents the client that interacts with the gateway for
@@ -125,9 +129,19 @@ public class Client extends UnicastRemoteObject {
             exit = true;
           } break;
           case SearchWordInIndex: {
-            System.out.print("Enter word: ");
-            final String word = scanner.next();
-            System.out.println("Searching word: " + word);
+            String userInput = JOptionPane.showInputDialog(null, "Enter your terms: ", "Googol", JOptionPane.QUESTION_MESSAGE);
+            if (userInput == null) {
+              break;
+            }
+
+            final String[] words = userInput.split(" ");
+
+            //System.out.print("Enter word: ");
+            //final String[] words = scanner.nextLine().split(" ");
+
+            System.out.println(String.format("Searching words: %s", Arrays.asList(words)));
+            final HashSet<Url> urls = gateway.searchPagesByWords(words);
+            System.out.println(String.format("urls: %s", urls));
           } break;
           case Status: {
             System.out.println(gateway.getStatus());

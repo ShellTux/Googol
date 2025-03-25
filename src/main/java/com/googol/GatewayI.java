@@ -3,6 +3,7 @@ package com.googol;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 /**
  * Remote interface for the Gateway service to provide URL indexing and searching functionality.
@@ -32,4 +33,6 @@ public interface GatewayI extends Remote {
    * @throws RemoteException if a communication-related exception occurs.
    */
   public ArrayList<String> getTop10Searches() throws RemoteException;
+
+  public HashSet<Url> searchPagesByWords(final String[] words) throws RemoteException;
 }

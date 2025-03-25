@@ -25,7 +25,8 @@ import java.util.logging.Logger;
  */
 public class IndexStorageBarrel extends UnicastRemoteObject implements IndexStorageBarrelI {
   private BlockingQueue<String> urlQueue;
-  private HashMap<String, HashSet<Url>> indexStore;
+  private HashMap<String, HashSet<Url>> indexStoreTerm2Urls;
+  private HashMap<Url, HashSet<String>> indexStoreUrl2Terms;
   private HashSet<Url> indexedUrls;
 
   private static Semaphore semaphore = null;
@@ -51,7 +52,8 @@ public class IndexStorageBarrel extends UnicastRemoteObject implements IndexStor
     super();
 
     urlQueue = new LinkedBlockingQueue<>();
-    indexStore = new HashMap<>();
+    indexStoreTerm2Urls = new HashMap<>();
+    indexStoreUrl2Terms = new HashMap<>();
     indexedUrls = new HashSet<>();
   }
 
@@ -164,21 +166,46 @@ public class IndexStorageBarrel extends UnicastRemoteObject implements IndexStor
     final Url indexedUrl = new Url(url);
     int addedWords = 0;
 
+    if (!indexStoreUrl2Terms.containsKey(indexedUrl)) {
+      indexStoreUrl2Terms.put(indexedUrl, new HashSet<>());
+    }
+
+    HashSet<String> terms = indexStoreUrl2Terms.get(indexedUrl);
+    terms.add(url);
+
+    indexStoreUrl2Terms.replace(indexedUrl, terms);
+
     for (final String word: words) {
-      if (!indexStore.containsKey(word)) {
-        indexStore.put(word, new HashSet<>());
+      if (!indexStoreTerm2Urls.containsKey(word)) {
+        indexStoreTerm2Urls.put(word, new HashSet<>());
       }
 
-      HashSet<Url> urls = indexStore.get(word);
+      HashSet<Url> urls = indexStoreTerm2Urls.get(word);
+
       if (urls.add(indexedUrl)) {
         addedWords += 1;
       }
 
-      indexStore.replace(word, urls);
+
+      indexStoreTerm2Urls.replace(word, urls);
     }
 
     indexedUrls.add(indexedUrl);
 
     logger.info(String.format("url %s: %d words added", url, addedWords));
+  }
+
+  @Override
+  public HashSet<Url> searchPagesByWords(final String[] words) throws RemoteException {
+    HashSet<Url> resultUrls = new HashSet<>();
+
+    for (final String word : words) {
+        HashSet<Url> urls = indexStoreTerm2Urls.get(word);
+        if (urls != null) {
+            resultUrls.addAll(urls);
+        }
+    }
+
+    return resultUrls;
   }
 }

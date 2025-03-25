@@ -8,6 +8,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Queue;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
@@ -145,5 +146,10 @@ public class Gateway extends UnicastRemoteObject implements GatewayI {
   @Override
   public boolean queueUrl(String url) throws RemoteException {
     return getBarrel().queueUrl(url);
+  }
+
+  @Override
+  public HashSet<Url> searchPagesByWords(final String[] words) throws RemoteException {
+    return getBarrel().searchPagesByWords(words);
   }
 }

@@ -3,6 +3,7 @@ package com.googol;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Queue;
 
 /**
@@ -51,4 +52,6 @@ public interface IndexStorageBarrelI extends Remote {
    * @throws RemoteException if a communication-related exception occurs.
    */
   public void indexUrl(final String url, final ArrayList<String> words) throws RemoteException;
+
+  public HashSet<Url> searchPagesByWords(final String[] words) throws RemoteException;
 }
