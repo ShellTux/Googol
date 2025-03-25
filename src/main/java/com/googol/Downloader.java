@@ -8,19 +8,19 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.HashSet;
-import java.util.Queue;
+import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 public class Downloader implements Runnable {
     private ArrayList<IndexStorageBarrelI> barrels;
@@ -167,24 +167,18 @@ public class Downloader implements Runnable {
     }
 
     private ArrayList<String> indexUrl(final String url) {
-        ArrayList<String> urlWords = new ArrayList<>();
+        List<String> urlWords = new ArrayList<>();
         ArrayList<String> links = new ArrayList<>();
 
         try {
             Document document = Jsoup.connect(url).get();
-            StringTokenizer words = new StringTokenizer(document.text(), " ,.!?:/#%");
 
-            for (String word = words.nextToken(); words.hasMoreElements(); word = words.nextToken()) {
-                System.out.print(word);
-
-                if (words.hasMoreElements()) {
-                    System.out.print(", ");
-                }
-
-                urlWords.add(word);
-                // TODO: look up internal links
-            }
-            System.out.println();
+            urlWords = Collections
+                .list(new StringTokenizer(document.text(), " ,.!?:/#%"))
+                .stream()
+                .map(word -> (String)word)
+                .collect(Collectors.toList());
+            System.out.println(String.format("words = %s", urlWords));
 
             IndexStorageBarrelI barrel = getBarrel();
             for (Element linkEl : document.select("a[href]")) {
@@ -197,7 +191,7 @@ public class Downloader implements Runnable {
             e.printStackTrace();
         }
 
-        return urlWords;
+        return new ArrayList<String>(urlWords);
     }
 
 }
