@@ -9,11 +9,13 @@ $(JAVA_TARGET): $(JAVA_SRCS)
 
 .PHONY: javadoc
 javadoc:
-	mvn javadoc:javadoc
+	mvn --quiet --offline javadoc:javadoc
 
 .PHONY: archive
-archive: $(ARCHIVE) | javadoc
-	rm $<
+archive: $(ARCHIVE)
+
+$(ARCHIVE): | javadoc
+	rm --force $<
 	git ls-files > files.txt
 	find $(JAVADOC_DIR) -type f >> files.txt
-	zip $< -@ < files.txt
+	zip -@ $@ < files.txt
