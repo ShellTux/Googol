@@ -1,0 +1,42 @@
+#!/bin/sh
+set -e
+
+usage() {
+  echo "$0 <class>"
+  echo 'Available classes:'
+  list_classes | sed 's|^|  - |'
+  exit 1
+}
+
+list_classes() {
+  echo IndexStorageBarrel
+  echo Downloader
+  echo Gateway
+  echo Client
+}
+
+class="$1"
+
+list_classes | grep --quiet "^$class$" || usage
+
+case "$class" in
+  IndexStorageBarrel | Gateway)
+    (
+    tput smcup
+    clear
+    java -cp target/googol-1.0-SNAPSHOT.jar com.googol."$class"
+    tput rmcup
+    )
+    ;;
+  Downloader | Client)
+    (
+    tput smcup
+    clear
+    mvn exec:java --quiet --offline --define=exec.mainClass=com.googol."$class"
+    tput rmcup
+    )
+    ;;
+  *)
+    usage
+    ;;
+esac

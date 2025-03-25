@@ -48,7 +48,21 @@ This command will compile the Java source files and create an executable JAR in 
 
 ## Running the Project
 
-<!--TODO-->
+```shell
+mvn exec:java --quiet --offline --define exec.mainClass=com.googol.IndexStorageBarrel
+mvn exec:java --quiet --offline --define exec.mainClass=com.googol.Downloader
+mvn exec:java --quiet --offline --define exec.mainClass=com.googol.Gateway
+mvn exec:java --quiet --offline --define exec.mainClass=com.googol.Client
+```
+
+Or you can run the wrapper shell script:
+
+```shell
+./run IndexStorageBarrel
+./run Downloader
+./run Gateway
+./run Client
+```
 
 ## Generating Javadoc
 
