@@ -55,6 +55,7 @@ public class Gateway extends UnicastRemoteObject implements GatewayI {
     final GoogolProperties properties = GoogolProperties.getDefaultSettings();
 
     final int gatewayRegistryPort = properties.getInt("Gateway.Registry.port");
+    final String barrelsRegistryHost = properties.getString("Barrels.Registry.host");
     final int barrelsRegistryPort = properties.getInt("Barrels.Registry.port");
     final int barrelsNumber = properties.getInt("Barrels.number");
 
@@ -67,7 +68,7 @@ public class Gateway extends UnicastRemoteObject implements GatewayI {
       try {
         System.out.println("Looking up: " + barrelName);
         barrel = (IndexStorageBarrelI) LocateRegistry
-          .getRegistry(barrelsRegistryPort)
+          .getRegistry(barrelsRegistryHost, barrelsRegistryPort)
           .lookup(barrelName);
         barrels.add(barrel);
       } catch (RemoteException | NotBoundException e) {
