@@ -17,6 +17,7 @@ import javax.swing.JOptionPane;
  */
 public class Client extends UnicastRemoteObject {
   private static GatewayI gateway;
+  private static String gatewayRegistryHost;
   private static int gatewayRegistryPort;
 
   /**
@@ -41,7 +42,7 @@ public class Client extends UnicastRemoteObject {
   private static void connectToGateway() {
     try {
       gateway = (GatewayI) LocateRegistry
-        .getRegistry(gatewayRegistryPort)
+        .getRegistry(gatewayRegistryHost, gatewayRegistryPort)
         .lookup("gateway");
     } catch (RemoteException | NotBoundException e) {
       // TODO Auto-generated catch block
@@ -59,6 +60,7 @@ public class Client extends UnicastRemoteObject {
   public static void main(String[] args) throws RemoteException, NotBoundException, KeyNotFoundException {
     final GoogolProperties properties = GoogolProperties.getDefaultSettings();
 
+    gatewayRegistryHost = properties.getString("Gateway.Registry.host");
     gatewayRegistryPort = properties.getInt("Gateway.Registry.port");
 
     final String motd = """

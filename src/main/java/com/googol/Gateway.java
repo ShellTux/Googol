@@ -54,6 +54,7 @@ public class Gateway extends UnicastRemoteObject implements GatewayI {
 
     final GoogolProperties properties = GoogolProperties.getDefaultSettings();
 
+    final String gatewayRegistryHost = properties.getString("Gateway.Registry.host");
     final int gatewayRegistryPort = properties.getInt("Gateway.Registry.port");
     final String barrelsRegistryHost = properties.getString("Barrels.Registry.host");
     final int barrelsRegistryPort = properties.getInt("Barrels.Registry.port");
