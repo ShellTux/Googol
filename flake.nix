@@ -37,6 +37,7 @@
           ] ++ [
             pkgs.entr
             pkgs.figlet
+            pkgs.netcat-gnu
             pkgs.pandoc
             pkgs.pandoc-include
             pkgs.simple-http-server
